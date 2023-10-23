@@ -45,7 +45,7 @@ app.use(require('./src/helpers/logger'))
 
 
 //* ERROR HANDLER
-
+app.use(require('./src/middlewares/errorHandler'))
 
 
 
