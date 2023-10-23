@@ -2,6 +2,8 @@
 
 const mongoose=require('mongoose')
 
+const passwordEncrypt=require('../helpers/passwordEncrypt')
+
 const UserSchema=new mongoose.Schema({
 
     username:{
@@ -13,7 +15,8 @@ const UserSchema=new mongoose.Schema({
     password:{
         type:String,
         trim:true,
-        required:true
+        required:true,
+        set:(password)=>passwordEncrypt(password)
     },
     email:{
         type:String,
