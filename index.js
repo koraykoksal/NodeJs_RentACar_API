@@ -29,24 +29,19 @@ app.use(require('./src/helpers/logger'))
 
 
 
+//? MIDDLEWARE
 
-//* MIDDLEWARE
-
-
-
-
+//* AUTHORIZATION
+app.use(require('./src/middlewares/authentication'))
 
 
-
-//* ROUTES
+//* FIND SEARCH
+app.use(require('./src/middlewares/findSearchSortPage'))
 
 
 
 
-
-//* ERROR HANDLER
-app.use(require('./src/middlewares/errorHandler'))
-
+//? ROUTES
 
 
 app.use('/',(req,res)=>{
@@ -59,6 +54,22 @@ app.use('/',(req,res)=>{
     })
 
 })
+
+app.use('/api/auth',require('./src/routes/auth'))
+app.use('/api/users',require('./src/routes/user'))
+app.use('/api/cars',require('./src/routes/cars'))
+app.use('/api/reservation',require('./src/routes/reservation'))
+app.use('/api/token',require('./src/routes/token'))
+
+
+
+
+
+//* ERROR HANDLER
+app.use(require('./src/middlewares/errorHandler'))
+
+
+
 
 
 

@@ -24,7 +24,7 @@ const CarSchema=new mongoose.Schema({
         trim:true
     },
     year:{
-        type:Int32Array,
+        type:Number,
         required:true,
         unique:false,
         trim:true
