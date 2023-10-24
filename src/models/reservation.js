@@ -22,6 +22,21 @@ const ReservationSchema=new mongoose.Schema({
         type:Date,
         trim:true,
         required:true
+    },
+    quantity:{
+        type:Number,
+        default:1,
+        required:true
+    },
+    totalPrice:{
+        type:Number,
+        required:true,
+        default:0
+    },
+    priceType:{
+        type:String,
+        required:true,
+        trim:true
     }
 
 

@@ -11,7 +11,7 @@ router.route('/')
 
 
 router.route('/:id')
-.get(reservation.read)
+.post(reservation.read)
 .put(reservation.update)
 .patch(reservation.update)
 .delete(reservation.delete)

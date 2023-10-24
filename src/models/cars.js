@@ -20,19 +20,18 @@ const CarSchema=new mongoose.Schema({
     model:{
         type:String,
         required:true,
-        unique:true,
         trim:true
     },
     year:{
         type:Number,
         required:true,
-        unique:false,
         trim:true
     },
     gear:{
         type:String,
         required:true,
-        unique:true,
+        enum:["Auto","Manuel"],
+        default:"Auto",
         trim:true
     },
     pricePerDay:{
@@ -40,6 +39,12 @@ const CarSchema=new mongoose.Schema({
         trim:true,
         unique:false,
         required:true
+    },
+    priceType:{
+        type:String,
+        required:true,
+        enum:["EURO","USD"],
+        default:"USD"
     },
     isPublish:{
         type:Boolean,

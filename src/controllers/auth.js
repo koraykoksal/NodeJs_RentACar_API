@@ -36,7 +36,7 @@ module.exports = {
 
             const user = await User.findOne({ username, password })
             //user bilgisi token model de var mı kontrol edilir
-            const user2 = await Token.findOne({userId:user._id})
+            const user_token = await Token.findOne({userId:user._id})
 
             
 
@@ -44,15 +44,17 @@ module.exports = {
 
                 if (user.isActive) {
 
-                    if(user2){
+                    // token model de user bilgisi varsa aşağıdaki gibi res.send yap
+                    if(user_token){
 
                         res.send({
                             error:false,
-                            token:user2.token
+                            token:user_token.token
                         })
                     }
                     else{
 
+                        // token model da user bilgisi yoksa yeni bir token oluştur ve res.send yap
                         const data = setToken(user)
                         const result = await Token.create({userId:user.id,token:data.access})
 
