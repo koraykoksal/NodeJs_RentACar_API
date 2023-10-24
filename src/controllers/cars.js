@@ -26,6 +26,8 @@ module.exports={
             details: await res.getModelListDetails(Car),
             data
         })
+
+        
     },
 
     create: async (req, res) => {
@@ -52,6 +54,8 @@ module.exports={
             error: false,
             data
         })
+
+       
     },
 
     read: async (req, res) => {
@@ -66,6 +70,8 @@ module.exports={
             error: false,
             data
         })
+
+        
 
     },
 

@@ -1,9 +1,10 @@
 "use strict"
 
-const Reservation=require('../models/reservation')
-const Car=require('../models/cars')
+const Reservation = require('../models/reservation')
+const Car = require('../models/cars')
+const mail = require('../helpers/sendMail')
 
-module.exports={
+module.exports = {
 
     list: async (req, res) => {
         /*
@@ -21,11 +22,13 @@ module.exports={
 
         const data = await res.getModelList(Reservation)
 
+
         res.status(200).send({
             error: false,
             details: await res.getModelListDetails(Reservation),
             data
         })
+
     },
 
     create: async (req, res) => {
@@ -46,28 +49,47 @@ module.exports={
             }
         */
 
-       
+        //* yeni rezervasyon oluşturulmak istendiğinde önce aracın ispublish değeri kontrol edilir. Burada arac yayına hazır mı ona bakılır
 
-        const {startDate,endDate,carId} = req.body
+        const { startDate, endDate, carId } = req.body
 
-        const selectedCar = await Car.findOne({_id:carId})
+        const selectedCar = await Car.findOne({ _id: carId })
 
         const fark = new Date(endDate).getTime() - new Date(startDate).getTime()
         const gunSayisi = Math.floor(fark / 1000 / 60 / 60 / 24)
 
         const totalUcret = gunSayisi * selectedCar.pricePerDay
-        
+
         req.body.quantity = gunSayisi
         req.body.totalPrice = totalUcret
         req.body.priceType = selectedCar.priceType
 
-        const data = await Reservation.create(req.body)
-        
 
-        res.status(201).send({
-            error: false,
-            data
-        })
+
+        if (selectedCar.isPublish) {
+
+            //* rezervasyonu oluşturulmak istenen aracın rezervasyonu var mı kontol edilir
+            // const data = await Reservation.findOne({ _id:  carId})
+
+            const data = await Reservation.create(req.body)
+
+            res.status(201).send({
+                error: false,
+                data
+            })
+
+            mail(data)
+
+        }
+        else {
+            res.status(201).send({
+                error: true,
+                result: "Sorry, The car is not available !",
+                details:`isPublish : ${selectedCar.isPublish}`
+            })
+        }
+
+
     },
 
     read: async (req, res) => {
@@ -78,22 +100,12 @@ module.exports={
 
         const data = await Reservation.findOne({ _id: req.params.id })
 
-        const time = req.body
-        
-        if(new Date(time.endDate) < new Date(data.startDate) && new Date(time.startDate) > new Date(data.endDate)){
-            res.status(200).send({
-                error: false,
-                data
-            })
-        }
-        else{
-            res.status(200).send({
-                error: false,
-                result:"The car is not available"
-            })
-        }
 
-        
+        res.status(200).send({
+            error: false,
+            data
+        })
+
 
     },
 
