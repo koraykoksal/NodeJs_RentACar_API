@@ -44,7 +44,7 @@ app.use(require('./src/middlewares/findSearchSortPage'))
 //? ROUTES
 
 
-app.use('/',(req,res)=>{
+app.all('/',(req,res)=>{
 
     res.send({
         error:false,
@@ -67,9 +67,6 @@ app.use('/api/token',require('./src/routes/token'))
 
 //* ERROR HANDLER
 app.use(require('./src/middlewares/errorHandler'))
-
-
-
 
 
 

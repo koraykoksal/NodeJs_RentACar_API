@@ -8,6 +8,8 @@ const jwt = require('jsonwebtoken')
 const setToken = require('../helpers/setToken')
 
 const User = require('../models/user')
+const Token = require('../models/tokens')
+const { token } = require('morgan')
 
 module.exports = {
 
@@ -33,15 +35,36 @@ module.exports = {
         if (username && password) {
 
             const user = await User.findOne({ username, password })
+            //user bilgisi token model de var mı kontrol edilir
+            const user2 = await Token.findOne({userId:user._id})
+
+            
 
             if (user) {
 
                 if (user.isActive) {
 
-                    res.send({
-                        error: false,
-                        token: setToken(user)
-                    })
+                    if(user2){
+
+                        res.send({
+                            error:false,
+                            token:user2.token
+                        })
+                    }
+                    else{
+
+                        const data = setToken(user)
+                        const result = await Token.create({userId:user.id,token:data.access})
+
+                        res.send({
+                            error: false,
+                            token:result
+                            
+                        })
+                    }
+
+
+                    
 
                 } else {
 
@@ -76,7 +99,7 @@ module.exports = {
             }
         */
 
-        const refreshToken = req.body?.token?.refresh
+        const refreshToken = req.body?.token?.refreshToken
 
         if (refreshToken) {
 

@@ -7,7 +7,10 @@
 
 const jwt = require('jsonwebtoken')
 
+const tokenModel = require('../models/tokens')
+
 module.exports = function (userData, isRefresh = false) {
+
 
     const data = {
         access: userData.toJSON(),
@@ -16,7 +19,10 @@ module.exports = function (userData, isRefresh = false) {
         longExpiresIn: '3d',
     }
 
+    
+
     return {
+
         access: jwt.sign(data.access, process.env.ACCESS_KEY, { expiresIn: data.shortExpiresIn }),
         refresh: (isRefresh ? undefined : jwt.sign(data.refresh, process.env.REFRESH_KEY, { expiresIn: data.longExpiresIn }))
     }
