@@ -1,6 +1,7 @@
 "use strict"
 
 
+const { response } = require('express');
 const nodemailer = require('nodemailer')
 
 const transporter = nodemailer.createTransport({
@@ -15,9 +16,9 @@ const transporter = nodemailer.createTransport({
 
 
 
-module.exports = async function (about) {
+module.exports =  function (about) {
 
-    console.log(about)
+    const {startDate,endDate,price,priceType,quantity,totalPrice} = about
 
     const mailOptions = {
         from: {
@@ -26,26 +27,24 @@ module.exports = async function (about) {
         },
         to: process.env.MAIL_TO,
         subject: 'About Rent A Car.',
-        text: {
-            "startDate":about.startDate,
-            "endDate":about.endDate,
-            "price":about.totalPrice,
-            "priceType":about.priceType,
-            "quantity":about.quantity
-        }
+        text:`
+            Dear Sir or Madam,
+            
+            Information:
+            - StartDate: ${startDate}
+            - EndDate: ${endDate}
+            - TotalDay: ${quantity}
+            - TotalPrice: ${totalPrice} ${priceType}
+            
+            Best Regards,
+            Koray Rent A Car Company
+        `
+
     };
 
 
-    return(
-        transporter.sendMail(mailOptions, function (error, info) {
-            if (error) {
-                console.log(error);
-            } else {
-                console.log('Email sent: ' + info.response);
-            }
-        })
-    )
-    
+    return transporter.sendMail(mailOptions).then(res=>console.log(res.response)).catch(err=>console.log(err))
+
 
 }
 

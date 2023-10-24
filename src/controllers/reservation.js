@@ -75,10 +75,11 @@ module.exports = {
 
             res.status(201).send({
                 error: false,
-                data
+                data,
+                mailInfo: mail(data)
             })
 
-            mail(data)
+            
 
         }
         else {

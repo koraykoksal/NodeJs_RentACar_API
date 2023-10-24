@@ -40,7 +40,6 @@ app.use(require('./src/middlewares/findSearchSortPage'))
 
 
 
-
 //? ROUTES
 
 
