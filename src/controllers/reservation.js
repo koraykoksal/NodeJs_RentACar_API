@@ -65,29 +65,59 @@ module.exports = {
         req.body.priceType = selectedCar.priceType
 
 
+        
 
         if (selectedCar.isPublish) {
 
+
             //* rezervasyonu oluşturulmak istenen aracın rezervasyonu var mı kontol edilir
-            // const data = await Reservation.findOne({ _id:  carId})
+            const carReservation = await Reservation.findOne({ carId: carId})
 
-            const data = await Reservation.create(req.body)
+            if(carReservation){
 
-            res.status(201).send({
-                error: false,
-                data,
-                mailInfo: mail(data)
-            })
+                if(new Date(endDate) < new Date(carReservation.startDate) && new Date(startDate) > new Date(carReservation.endDate)){
+
+                    const data = await Reservation.create(req.body)
+    
+                    res.status(201).send({
+                        error: false,
+                        data,
+                        mailInfo: mail(data)
+                    })
+    
+                }
+                else{
+                    
+                    res.status(204).send({
+                        error: true,
+                        result : `The car is not available between ${req.body.startDate} - ${req.body.endDate}`
+                    })
+                    
+                }
+            }
+            else{
+
+                const data = await Reservation.create(req.body)
+    
+                    res.status(201).send({
+                        error: false,
+                        data,
+                        mailInfo: mail(data)
+                    })
+            }
 
             
 
+
         }
         else {
-            res.status(201).send({
+
+
+            res.status(204).send({
                 error: true,
-                result: "Sorry, The car is not available !",
-                details:`isPublish : ${selectedCar.isPublish}`
+                result : `isPublish : ${selectedCar.isPublish}`
             })
+            
         }
 
 
