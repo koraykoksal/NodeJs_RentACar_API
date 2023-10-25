@@ -3,6 +3,7 @@
 const Reservation = require('../models/reservation')
 const Car = require('../models/cars')
 const mail = require('../helpers/sendMail')
+const reservControl = require('../helpers/reservationControl')
 
 module.exports = {
 
@@ -64,60 +65,103 @@ module.exports = {
         req.body.totalPrice = totalUcret
         req.body.priceType = selectedCar.priceType
 
-
-        
-
         if (selectedCar.isPublish) {
 
-
             //* rezervasyonu oluşturulmak istenen aracın rezervasyonu var mı kontol edilir
-            const carReservation = await Reservation.findOne({ carId: carId})
+            const carReservation = await Reservation.findOne({ carId: carId })
 
-            if(carReservation){
+            //son yapılan kayıt
+            //const lastInsert = await Reservation.findOne().sort({ _id: -1 })
 
-                if(new Date(endDate) < new Date(carReservation.startDate) && new Date(startDate) > new Date(carReservation.endDate)){
 
-                    const data = await Reservation.create(req.body)
-    
-                    res.status(201).send({
-                        error: false,
-                        data,
-                        mailInfo: mail(data)
-                    })
-    
+            if (carReservation) {
+
+
+                if (new Date(endDate) > new Date(startDate)) {
+
+
+                    const sonuc = reservControl(carId, startDate, endDate)
+
+                    if(sonuc){
+                        console.log("sonuc true")
+                        res.status(201).send({
+                            data:"test"
+                        })
+                    }
+                    else{
+                        console.log("sonuc false")
+                    }
+
+                  
+
+                    //------------
+
+                    // if (result) {
+                    //     res.status(201).send({
+                    //         error: false,
+                    //         data,
+                    //         mailInfo: mail(data, selectedCar)
+                    //     })
+                    // }
+                    // else{
+                    //     res.errorStatusCode = 401
+                    //     throw new Error(`The car is not available between ${req.body.startDate} - ${req.body.endDate}`)
+                    // }
+
+                    // if (new Date(endDate) < new Date(carReservation.startDate)) {
+
+                    //     const data = await Reservation.create(req.body)
+
+                    //     res.status(201).send({
+                    //         error: false,
+                    //         data,
+                    //         mailInfo: mail(data, selectedCar)
+                    //     })
+
+                    //----------------
+                    
+                    // }
+                    // else if (new Date(startDate) > new Date(carReservation.endDate)) {
+
+                    //     const data = await Reservation.create(req.body)
+
+                    //     res.status(201).send({
+                    //         error: false,
+                    //         data,
+                    //         mailInfo: mail(data, selectedCar)
+                    //     })
+                    // }
+                    // else {
+
+                    //     res.errorStatusCode = 401
+                    //     throw new Error(`The car is not available between ${req.body.startDate} - ${req.body.endDate}`)
+                    // }
                 }
-                else{
-                    
-                    res.status(204).send({
-                        error: true,
-                        result : `The car is not available between ${req.body.startDate} - ${req.body.endDate}`
-                    })
-                    
+                else {
+
+                    res.errorStatusCode = 401
+                    throw new Error("Please Check StartDate and EndDate !")
                 }
             }
-            else{
+            else {
 
                 const data = await Reservation.create(req.body)
-    
-                    res.status(201).send({
-                        error: false,
-                        data,
-                        mailInfo: mail(data)
-                    })
+
+                res.status(201).send({
+                    error: false,
+                    data,
+                    mailInfo: mail(data, selectedCar)
+                })
             }
 
-            
+
 
 
         }
         else {
 
-
-            res.status(204).send({
-                error: true,
-                result : `isPublish : ${selectedCar.isPublish}`
-            })
-            
+            res.errorStatusCode = 401
+            throw new Error(`The car isPublish status : ${selectedCar.isPublish}`)
         }
 
 

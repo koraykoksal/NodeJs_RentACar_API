@@ -16,9 +16,10 @@ const transporter = nodemailer.createTransport({
 
 
 
-module.exports =  function (about) {
+module.exports =  function (about,car) {
 
     const {startDate,endDate,price,priceType,quantity,totalPrice} = about
+    const {plateNumber,brand,model,year,gear}=car
 
     const mailOptions = {
         from: {
@@ -31,10 +32,15 @@ module.exports =  function (about) {
             Dear Sir or Madam,
             
             Information:
-            - StartDate: ${startDate}
-            - EndDate: ${endDate}
-            - TotalDay: ${quantity}
-            - TotalPrice: ${totalPrice} ${priceType}
+            - Car Plate Number: ${plateNumber}
+            - Brand: ${brand}
+            - Model: ${model}
+            - Gear: ${gear}
+            - Year: ${year}
+            - Rent Startdate: ${startDate}
+            - Rent Enddate: ${endDate}
+            - Total Day: ${quantity}
+            - Total Price: ${totalPrice} ${priceType}
             
             Best Regards,
             Koray Rent A Car Company
