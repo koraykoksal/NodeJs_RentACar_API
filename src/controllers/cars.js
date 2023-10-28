@@ -47,6 +47,15 @@ module.exports={
                 }
             }
         */
+       
+    //    console.log("file : ",req.file) // upload single()
+    //    console.log("files : ",req.files) // upload array() or upload.any()
+
+       req.body.images = req.body?.images || []
+
+       for(let file of req.files){
+        req.body.images.push(file.originalName)
+       }
 
         const data = await Car.create(req.body)
 

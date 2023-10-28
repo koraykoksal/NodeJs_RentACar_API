@@ -51,6 +51,10 @@ const CarSchema=new mongoose.Schema({
         trim:true,
         default:true
     },
+    images:{
+        type:Array,
+        default:[]
+    },
     createdId:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"User"
